@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgcng9IjIwIiBmaWxsPSIjM2I4MmY6Ii8+PHRleHQgeD0iNTAiIHk9IjUwIiBmb250LWZhbWlseT0iQXJpYWwsIHNhbnMtc2VyaWYiIGZvbnQtc2l6ZT0iNDAiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkb21pbmFudC1iYXNlbGluZT0iY2VudHJhbCIgZm9udC13ZWlnaHQ9ImJvbGQiPlFGUzwvdGV4dD48L3N2Zz4=" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <link rel="manifest" href="/manifest.json" />
+    <title>شؤون الموظفين</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <!-- Cairo Font for PDF export -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "recharts": "https://aistudiocdn.com/recharts@^3.3.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.26.0"
+  }
+}
+</script>
+<style>
+  :root, [data-theme='light'] {
+    --bg-primary: #f3f4f6;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e5e7eb;
+    --bg-quaternary: #d1d5db;
+    --bg-glass: rgba(255, 255, 255, 0.8);
+    --text-primary: #111827;
+    --text-secondary: #374151;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+    --border-color-light: #d1d5db;
+    --accent-color: #2563eb;
+    --accent-color-hover: #1d4ed8;
+    --accent-text: #3b82f6;
+    --success-bg: rgba(16, 185, 129, 0.1);
+    --success-text: #059669;
+    --warning-bg: rgba(245, 158, 11, 0.1);
+    --warning-text: #d97706;
+    --danger-bg: rgba(239, 68, 68, 0.1);
+    --danger-text: #dc2626;
+  }
+  [data-theme='dark-blue'] {
+    --bg-primary: #111827;
+    --bg-secondary: #1f2937;
+    --bg-tertiary: #374151;
+    --bg-quaternary: #4b5563;
+    --bg-glass: rgba(31, 41, 55, 0.8);
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;
+    --text-muted: #9ca3af;
+    --border-color: #374151;
+    --border-color-light: #4b5563;
+    --accent-color: #3b82f6;
+    --accent-color-hover: #2563eb;
+    --accent-text: #60a5fa;
+    --success-bg: rgba(16, 185, 129, 0.2);
+    --success-text: #34d399;
+    --warning-bg: rgba(245, 158, 11, 0.2);
+    --warning-text: #f59e0b;
+    --danger-bg: rgba(239, 68, 68, 0.2);
+    --danger-text: #ef4444;
+  }
+  [data-theme='forest'] {
+    --bg-primary: #1a2e29;
+    --bg-secondary: #2d4a43;
+    --bg-tertiary: #4a6861;
+    --bg-quaternary: #5e8179;
+    --bg-glass: rgba(45, 74, 67, 0.8);
+    --text-primary: #e0f2f1;
+    --text-secondary: #b2dfdb;
+    --text-muted: #80cbc4;
+    --border-color: #4a6861;
+    --border-color-light: #5e8179;
+    --accent-color: #34d399;
+    --accent-color-hover: #10b981;
+    --accent-text: #6ee7b7;
+    --success-bg: rgba(52, 211, 153, 0.2);
+    --success-text: #34d399;
+    --warning-bg: rgba(250, 204, 21, 0.2);
+    --warning-text: #facc15;
+    --danger-bg: rgba(248, 113, 113, 0.2);
+    --danger-text: #f87171;
+  }
+  [data-theme='crimson'] {
+    --bg-primary: #2a0f12;
+    --bg-secondary: #4d1c23;
+    --bg-tertiary: #7a2d38;
+    --bg-quaternary: #9f3d4d;
+    --bg-glass: rgba(77, 28, 35, 0.8);
+    --text-primary: #fde8ea;
+    --text-secondary: #f5b5bc;
+    --text-muted: #f198a3;
+    --border-color: #7a2d38;
+    --border-color-light: #9f3d4d;
+    --accent-color: #e11d48;
+    --accent-color-hover: #be123c;
+    --accent-text: #f43f5e;
+    --success-bg: rgba(52, 211, 153, 0.2);
+    --success-text: #34d399;
+    --warning-bg: rgba(250, 204, 21, 0.2);
+    --warning-text: #facc15;
+    --danger-bg: rgba(248, 113, 113, 0.2);
+    --danger-text: #f87171;
+  }
+  [data-theme='matrix'] {
+    --bg-primary: #020402;
+    --bg-secondary: #0D110D;
+    --bg-tertiary: #1a2e1a;
+    --bg-quaternary: #2d4a2d;
+    --bg-glass: rgba(13, 22, 13, 0.7);
+    --text-primary: #00ff41;
+    --text-secondary: #00e039;
+    --text-muted: #00b32d;
+    --border-color: #004d11;
+    --border-color-light: #006616;
+    --accent-color: #00ff41;
+    --accent-color-hover: #00e039;
+    --accent-text: #50ff7a;
+    --success-bg: rgba(0, 255, 65, 0.1);
+    --success-text: #00ff41;
+    --warning-bg: rgba(255, 255, 0, 0.15);
+    --warning-text: #f3f315;
+    --danger-bg: rgba(255, 0, 0, 0.15);
+    --danger-text: #ff3333;
+  }
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  /* Custom scrollbar for sidebar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: var(--bg-quaternary);
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg-quaternary) transparent;
+  }
+  .font-cairo {
+    font-family: 'Cairo', sans-serif;
+  }
+</style>
+</head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+{
+  "name": "شؤون الموظفين",
+  "description": "An electronic system for calculating overtime hours based on a shift schedule with an employee data management system. The interface is in Arabic.",
+  "requestFramePermissions": []
+}
